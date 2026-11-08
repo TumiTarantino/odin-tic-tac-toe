@@ -24,7 +24,10 @@ function Gameboard() {
         return gameboard.every(element => !!element)// returns true or false, Typescriptt!!!
     }
     function getMarker(index) {
-        return gameboard[index];
+        return gameboard[index]; // returns the marker at a specific index
+    }
+    function getBoard(){
+        return [...gameboard]; // returns a shallow copy of the gameboard, i wonder if there is some mutablity concerns?
     }
     function printGameboard(){
         console.log(gameboard)
@@ -34,6 +37,7 @@ function Gameboard() {
     }
 
     return{
+        getBoard,
         resetGameboard,
         isGameboardFull,
         isEmpty,
@@ -163,8 +167,11 @@ function GameController () {
         gameOver = false;
         winner = null;
     }
-
+    function getBoard(){
+        return gameboard.getBoard();
+    }
     return{
+        getBoard,
         playRound,
         checkWin,
         checkDraw,
@@ -187,10 +194,26 @@ isthisthegamecontrol.playRound(7); //Player 2 O
 isthisthegamecontrol.playRound(8); //Player 1 X
 
 isthisthegamecontrol.printGameControllerState()
-isthisthegamecontrol.resetGame()
-isthisthegamecontrol.printGameControllerState()
-/*ad
-Future Me, you got this!
-the basic artictutre should be 
-GameBoard, Player, GameController, displayController
-*/
+
+function displayController(){
+    const gameContainer = document.querySelector(".game-container");
+    const board = isthisthegamecontrol.getBoard()
+    
+    function createBoard(){
+        for(let i = 0; i < 9; i++){
+            const gameBlock = document.createElement("div");
+            gameBlock.classList.add("game-block");
+            gameBlock.textContent = board[i];
+
+
+            gameContainer.append(gameBlock);
+        }
+    }
+    function renderBoard(){
+        const board = isthisthegamecontrol.getBoard()
+        for(let i = 0; i < 9; i++){
+            gameBlock.textContent = board[i];
+        }
+    }
+}
+displayController()
