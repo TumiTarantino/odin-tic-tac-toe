@@ -1,14 +1,3 @@
-//Just ideating
-/*
-Gameboard:
-Has three states:""(empty),"X","O"
-I think js returns false for empty strings
-[(indexes)
-0,1,2,
-3,4,5,
-6,7,8
-]
- */
 
 function Gameboard() { 
     const gameboard = ["","","","","","","","",""];
@@ -41,19 +30,18 @@ function Gameboard() {
         console.log(gameboard)
     }
     function resetGameboard(){
-        gameboard = ["","","","","","","","",""];
+        gameboard.fill("");
     }
 
     return{
+        resetGameboard,
         isGameboardFull,
         isEmpty,
         placeMarker,
         getMarker,
         printGameboard
     }
-
 }
-
 
 function Player(name,symbol){
     return{
@@ -61,22 +49,6 @@ function Player(name,symbol){
         symbol
     }
 }
-
-
-/*Winning combos:
-1. 012,
-2. 036,
-3. 048,
-4. 147,
-5. 258,
-6. 345,
-7. 246,
-8. 678
-*/
-//We need to somehow check whether or not the winningCombos are active in the gameboard
-//Can we filter out the indexs of all the "O" in the gameboard?
-
-
 
 function GameController () {
 
@@ -94,6 +66,8 @@ function GameController () {
     [6,7,8]
         ]
     let activePlayer = player1;
+    let gameOver = false;
+    let winner = null;
 
     function changeActivePlayer(){
         if(activePlayer === player1){
@@ -133,17 +107,22 @@ function GameController () {
     }
     function checkGameStatus() {
         if (checkDraw()) {
-            console.log("The game is a draw!!!");
+            console.log("The game is a draw!!!");// this might be more important to displayController?
+            gameOver = true;
             return true;
         }
 
         if (checkWin("X")) {
             console.log("Player 1 wins!!!");
+            gameOver = true;
+            winner = player1;
             return true;
         }
 
         if (checkWin("O")) {
             console.log("Player 2 wins!!!");
+            gameOver = true;
+            winner = player2;
             return true;
         }
 
@@ -163,6 +142,7 @@ function GameController () {
         if (checkGameStatus()){
             return;
         }
+
         changeActivePlayer();
 
     }
@@ -177,12 +157,19 @@ function GameController () {
         console.log(`Is gameboard full?: ${gameboard.isGameboardFull()}`)
         console.log(`${gameboard.printGameboard()}`);
     }
+    function resetGame(){
+        gameboard.resetGameboard()
+        activePlayer = player1;
+        gameOver = false;
+        winner = null;
+    }
 
     return{
         playRound,
         checkWin,
         checkDraw,
-        printGameControllerState
+        printGameControllerState,
+        resetGame
     }
 }
 
@@ -199,7 +186,8 @@ isthisthegamecontrol.playRound(6); //Player 1 X
 isthisthegamecontrol.playRound(7); //Player 2 O
 isthisthegamecontrol.playRound(8); //Player 1 X
 
-
+isthisthegamecontrol.printGameControllerState()
+isthisthegamecontrol.resetGame()
 isthisthegamecontrol.printGameControllerState()
 /*ad
 Future Me, you got this!
