@@ -183,7 +183,7 @@ function GameController () {
 const isthisthegamecontrol = GameController();
 
 //Testing full game
-isthisthegamecontrol.playRound(0); //Player 1 X
+/*isthisthegamecontrol.playRound(0); //Player 1 X
 isthisthegamecontrol.playRound(1); //Player 2 O
 isthisthegamecontrol.playRound(2); //Player 1 X
 isthisthegamecontrol.playRound(3); //Player 2 O
@@ -194,26 +194,45 @@ isthisthegamecontrol.playRound(7); //Player 2 O
 isthisthegamecontrol.playRound(8); //Player 1 X
 
 isthisthegamecontrol.printGameControllerState()
-
-function displayController(){
+*/
+//I think this should have an args, since isthisga... is a variable
+function displayController(gameControllerObject){
     const gameContainer = document.querySelector(".game-container");
-    const board = isthisthegamecontrol.getBoard()
     
+    //Creates divs, nothing more
     function createBoard(){
         for(let i = 0; i < 9; i++){
             const gameBlock = document.createElement("div");
+            gameBlock.dataset.index = `${i}`;
+            //So adding playround event listeners, these need an index
+            gameBlock.addEventListener("click", () => {
+                gameControllerObject.playRound(gameBlock.dataset.index);
+                renderBoard();
+            })
+
             gameBlock.classList.add("game-block");
-            gameBlock.textContent = board[i];
-
-
             gameContainer.append(gameBlock);
         }
     }
+
+    //Renders what is inside those divs
     function renderBoard(){
-        const board = isthisthegamecontrol.getBoard()
+        const gameBlocks = gameContainer.querySelectorAll(".game-block");
+        const board = gameControllerObject.getBoard();
+        //The created elements in createboard need to be created, but since they are blocked scoped, how to get them?
         for(let i = 0; i < 9; i++){
-            gameBlock.textContent = board[i];
+            gameBlocks[i].textContent = board[i];
         }
     }
+    //Im not sure about this, butt here we goo!
+    return{
+        createBoard,
+        renderBoard,
+    }
 }
-displayController()
+
+
+const theDisplayControllerr2 = displayController(isthisthegamecontrol);
+
+theDisplayControllerr2.createBoard();
+theDisplayControllerr2.renderBoard();
