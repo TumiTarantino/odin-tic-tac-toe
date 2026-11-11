@@ -1,8 +1,29 @@
+const playerNameForm = document.querySelector(".player-input-form");
+
+//SO game will be created reset in the global context i guess
+playerNameForm.addEventListener("submit", (e) => {
+    e.preventDefault(); 
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    let player1Name = data["player-one"].trim() || "Player 1";
+    let player2Name = data["player-two"].trim() || "Player 2";
+
+    //After getting names from forms, instantiate the gameController
+    const wemadeitbois = GameController(player1Name, player2Name);
+    //We'll do the same here
+    const theDisplayControllerr = displayController(wemadeitbois);
+
+    theDisplayControllerr.renderPlayerName();
+    theDisplayControllerr.createBoard(); // this should be called once,
+    theDisplayControllerr.renderBoard();
+
+})
+
 
 function Gameboard() { 
     const gameboard = ["","","","","","","","",""];
     function isEmpty(index) {
-        if(index == undefined){
+        if(index === undefined){
             throw Error("Check the value of isEmpty. probably has no argument")
         }
         return gameboard[index] === ""; //If empty true
@@ -54,11 +75,11 @@ function Player(name,symbol){
     }
 }
 
-function GameController () {
+function GameController (player1name, player2name) {
 
     const gameboard = Gameboard();
-    const player1 = Player("Uno", "X");
-    const player2 = Player("Duos", "O");
+    const player1 = Player(player1name, "X");
+    const player2 = Player(player2name, "O");
     const winningCombos = [
     [0,1,2],
     [0,3,6],
@@ -70,9 +91,19 @@ function GameController () {
     [6,7,8]
         ]
     let activePlayer = player1;
-    let gameOver = false;
     let winner = null;
-
+    function getActivePlayer(){
+        return activePlayer;
+    }
+    function getWinner(){
+        return winner;
+    }
+    function getPlayer1(){
+        return player1;
+    }
+    function getPlayer2(){
+        return player2;
+    }
     function changeActivePlayer(){
         if(activePlayer === player1){
             activePlayer = player2;
@@ -112,42 +143,41 @@ function GameController () {
     function checkGameStatus() {
         if (checkDraw()) {
             console.log("The game is a draw!!!");// this might be more important to displayController?
-            gameOver = true;
-            return true;
+            return "draw";
         }
 
         if (checkWin("X")) {
             console.log("Player 1 wins!!!");
-            gameOver = true;
             winner = player1;
-            return true;
+            return "won";
         }
 
         if (checkWin("O")) {
             console.log("Player 2 wins!!!");
-            gameOver = true;
             winner = player2;
-            return true;
+            return "won";
         }
 
-        return false;
+        return "playing";
     }
 
     function playRound(index){
         //So the active player should be, well active, at the end of the function the active player should be changed,
         //The active player should put there symbol on their selected index on the gameboard
-        
-        if (checkGameStatus()){
-            return;
+        let status = checkGameStatus();
+        if (status !== "playing"){
+            return status;
         }
 
         gameboard.placeMarker(index, activePlayer.symbol);
 
-        if (checkGameStatus()){
-            return;
+        status = checkGameStatus();
+        if (status !== "playing"){
+            return status;
         }
 
         changeActivePlayer();
+        return "playing"
 
     }
 
@@ -164,13 +194,16 @@ function GameController () {
     function resetGame(){
         gameboard.resetGameboard()
         activePlayer = player1;
-        gameOver = false;
         winner = null;
     }
     function getBoard(){
         return gameboard.getBoard();
     }
     return{
+        getPlayer1,
+        getPlayer2,
+        getWinner,
+        getActivePlayer,
         getBoard,
         playRound,
         checkWin,
@@ -179,8 +212,6 @@ function GameController () {
         resetGame
     }
 }
-
-const isthisthegamecontrol = GameController();
 
 //Testing full game
 /*isthisthegamecontrol.playRound(0); //Player 1 X
@@ -201,13 +232,21 @@ function displayController(gameControllerObject){
     
     //Creates divs, nothing more
     function createBoard(){
+        gameContainer.replaceChildren(); // Lazy solution, works though
         for(let i = 0; i < 9; i++){
             const gameBlock = document.createElement("div");
             gameBlock.dataset.index = `${i}`;
             //So adding playround event listeners, these need an index
             gameBlock.addEventListener("click", () => {
-                gameControllerObject.playRound(gameBlock.dataset.index);
+                const gameStatus = gameControllerObject.playRound(Number(gameBlock.dataset.index));
                 renderBoard();
+
+                if(gameStatus === "won"){
+                    renderWinner();
+                }
+                else if(gameStatus === "draw"){
+                    renderDraw();
+                }
             })
 
             gameBlock.classList.add("game-block");
@@ -219,20 +258,36 @@ function displayController(gameControllerObject){
     function renderBoard(){
         const gameBlocks = gameContainer.querySelectorAll(".game-block");
         const board = gameControllerObject.getBoard();
+
         //The created elements in createboard need to be created, but since they are blocked scoped, how to get them?
         for(let i = 0; i < 9; i++){
             gameBlocks[i].textContent = board[i];
         }
     }
-    //Im not sure about this, butt here we goo!
+    function renderPlayerName(){
+        const player1 = gameControllerObject.getPlayer1();
+        const player2 = gameControllerObject.getPlayer2();
+
+        const player1name = document.querySelector(".player-1-name");
+        const player2name = document.querySelector(".player-2-name");
+
+        player1name.textContent = `Player 1: ${player1.name}`;
+        player2name.textContent = `Player 2: ${player2.name}`;
+    }
+    function renderWinner(){
+        const gameWinnerDiv = document.querySelector(".game-result");
+        gameWinnerDiv.textContent = `The winner is: ${gameControllerObject.getWinner().name}`;
+    }
+    function renderDraw(){
+        const gameWinnerDiv = document.querySelector(".game-result");
+        gameWinnerDiv.textContent = "The game is a draw!!!";
+    }
     return{
+        renderWinner,
+        renderPlayerName,
         createBoard,
         renderBoard,
     }
 }
 
 
-const theDisplayControllerr2 = displayController(isthisthegamecontrol);
-
-theDisplayControllerr2.createBoard();
-theDisplayControllerr2.renderBoard();
