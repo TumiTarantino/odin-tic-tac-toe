@@ -15,10 +15,13 @@ body{
 
 .game-container{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
 
-    margin: 20px;
+    margin: 20px auto;
+
+    width: min(90vw, 450px);
+    aspect-ratio: 1 / 1;
 }
 
 .buttons-container{
@@ -48,11 +51,11 @@ button:active{
     gap: 3rem;
 }
 .game-block{
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
+
     border: 1px solid pink;
-    min-height: 50px;
 }
 .game-block:hover{
     background-color: azure;
