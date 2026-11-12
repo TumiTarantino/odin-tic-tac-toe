@@ -1,3 +1,22 @@
+const createPlayerBtn = document.querySelector(".modal-start-btn");
+const formModal = document.querySelector("#formModal");
+const startGameBtn = document.querySelector(".start-button");
+
+createPlayerBtn.addEventListener("click", () => {
+    formModal.showModal();
+})
+
+startGameBtn.addEventListener("click", () => {
+    formModal.close();
+})
+
+//Seems to not work?
+formModal.addEventListener("click", (e) => {
+    if(e.target === formModal){
+        formModal.close();
+    }
+})
+
 const playerNameForm = document.querySelector(".player-input-form");
 
 //SO game will be created reset in the global context i guess
@@ -14,6 +33,7 @@ playerNameForm.addEventListener("submit", (e) => {
     const theDisplayControllerr = displayController(wemadeitbois);
 
     theDisplayControllerr.renderPlayerName();
+    theDisplayControllerr.renderActivePlayer();
     theDisplayControllerr.createBoard(); // this should be called once,
     theDisplayControllerr.renderBoard();
 
@@ -239,14 +259,10 @@ function displayController(gameControllerObject){
             //So adding playround event listeners, these need an index
             gameBlock.addEventListener("click", () => {
                 const gameStatus = gameControllerObject.playRound(Number(gameBlock.dataset.index));
+                
                 renderBoard();
 
-                if(gameStatus === "won"){
-                    renderWinner();
-                }
-                else if(gameStatus === "draw"){
-                    renderDraw();
-                }
+                renderGameStatus(gameStatus);
             })
 
             gameBlock.classList.add("game-block");
@@ -282,7 +298,36 @@ function displayController(gameControllerObject){
         const gameWinnerDiv = document.querySelector(".game-result");
         gameWinnerDiv.textContent = "The game is a draw!!!";
     }
+    function renderActivePlayer(){
+        const gameActivePlayer = document.querySelector(".active-player");
+        gameActivePlayer.textContent = `It is ${gameControllerObject.getActivePlayer().name}'s turn...`; //Doesn't account for s-ending possession
+
+    }
+    function renderGameStatus(gameStatus) {
+        const gameResult = document.querySelector(".game-result");
+        const activePlayer = document.querySelector(".active-player");
+
+        // Clear previous messages
+        gameResult.textContent = "";
+        activePlayer.textContent = "";
+
+        if (gameStatus === "won") {
+            renderWinner();
+        }
+        else if (gameStatus === "draw") {
+            renderDraw();
+        }
+        else if (gameStatus === "playing") {
+            renderActivePlayer();
+        }
+    }
+
+    function renderResetGame(){
+        const gameResetBtn = document.querySelector(".reset-game-btn");
+    }
     return{
+        renderGameStatus,
+        renderActivePlayer,
         renderWinner,
         renderPlayerName,
         createBoard,
