@@ -33,6 +33,7 @@ body{
 }
 button{
     border-radius: 20px;
+    padding: 10px;
     background-color: aquamarine;
     color: burlywood;
     border: none;
@@ -54,6 +55,7 @@ button:active{
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 50px;
 
     border: 1px solid pink;
 }
@@ -79,3 +81,9 @@ dialog {
       background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(2px);
     }
+
+.player-input-form{
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
