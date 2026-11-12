@@ -1,3 +1,11 @@
+let theDisplayControllerr;
+
+const resetButton = document.querySelector(".reset-game-btn");
+
+resetButton.addEventListener("click", () => {
+    theDisplayControllerr?.resetGame();
+});
+
 const createPlayerBtn = document.querySelector(".modal-start-btn");
 const formModal = document.querySelector("#formModal");
 const startGameBtn = document.querySelector(".start-button");
@@ -30,7 +38,7 @@ playerNameForm.addEventListener("submit", (e) => {
     //After getting names from forms, instantiate the gameController
     const wemadeitbois = GameController(player1Name, player2Name);
     //We'll do the same here
-    const theDisplayControllerr = displayController(wemadeitbois);
+    theDisplayControllerr = displayController(wemadeitbois);
 
     theDisplayControllerr.renderPlayerName();
     theDisplayControllerr.renderActivePlayer();
@@ -256,12 +264,10 @@ function displayController(gameControllerObject){
         for(let i = 0; i < 9; i++){
             const gameBlock = document.createElement("div");
             gameBlock.dataset.index = `${i}`;
-            //So adding playround event listeners, these need an index
+
             gameBlock.addEventListener("click", () => {
                 const gameStatus = gameControllerObject.playRound(Number(gameBlock.dataset.index));
-                
                 renderBoard();
-
                 renderGameStatus(gameStatus);
             })
 
@@ -322,10 +328,18 @@ function displayController(gameControllerObject){
         }
     }
 
-    function renderResetGame(){
+    function resetGame(){
+        gameControllerObject.resetGame();
+        renderBoard();
+        renderGameStatus("playing");
+    }
+    function bindResetButton(){
         const gameResetBtn = document.querySelector(".reset-game-btn");
+        gameResetBtn.addEventListener("click", resetGame);
     }
     return{
+        bindResetButton,
+        resetGame,
         renderGameStatus,
         renderActivePlayer,
         renderWinner,
