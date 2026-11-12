@@ -1,23 +1,52 @@
 body{
     margin:0;
     height: 100dvh;
+    background-color: burlywood;
+    color:aquamarine;
 }
 
 .centered{
     display: flex;
     justify-content: center;
     align-items: center;
+
+    margin-bottom: 1rem;
 }
 
 .game-container{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
-   
 
     margin: 20px;
 }
 
+.buttons-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    margin-bottom: 2em;
+}
+button{
+    border-radius: 20px;
+    background-color: aquamarine;
+    color: burlywood;
+    border: none;
+}
+button:hover{
+    background-color: rgb(16, 228, 157);
+}
+button:active{
+    background-color: rgb(127, 255, 133);
+}
+
+.player-names{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+}
 .game-block{
     display:flex;
     justify-content: center;

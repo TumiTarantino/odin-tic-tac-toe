@@ -9,8 +9,10 @@
 </head>
 <body>
     <h1 class="centered">Tic Tac Toe</h1>
-    <button class="modal-start-btn centered">Create Players</button>
-    <button class="reset-game-btn centered">Reset Game</button>
+    <div class="buttons-container">
+        <button class="modal-start-btn centered">Create Players</button>
+        <button class="reset-game-btn centered">Reset Game</button>
+    </div>
     <dialog id="formModal">
         <form class="player-input-form centered">
             
@@ -23,9 +25,10 @@
             <button class="start-button">Start Game</button>
         </form>
     </dialog>
-
-    <div class="player-1-name centered"></div>
-    <div class="player-2-name centered"></div>
+    <div class="player-names">
+        <div class="player-1-name centered"></div>
+        <div class="player-2-name centered"></div>
+    </div>
     <div class="active-player centered"></div>
     <div class="game-container"></div>
     <div class="game-result centered"></div>
